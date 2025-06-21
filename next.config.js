@@ -2,6 +2,21 @@
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
+    // 添加更多图片域名支持
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.vercel.app',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   // 性能优化
   experimental: {
@@ -15,6 +30,29 @@ const nextConfig = {
   optimizeFonts: true,
   // 减少构建输出
   output: 'standalone',
+  // 添加国际化支持
+  i18n: {
+    locales: ['zh-CN', 'en'],
+    defaultLocale: 'zh-CN',
+  },
+  // 添加安全头
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig 
