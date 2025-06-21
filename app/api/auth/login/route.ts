@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { userDB, sessionDB } from '@/lib/db'
+import { userService, sessionService } from '@/lib/database'
 
 // 强制动态渲染，避免静态化
 export const dynamic = 'force-dynamic'
@@ -15,8 +15,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 验证用户
-    const user = userDB.authenticate(username, password)
+    const user = await userService.authenticate(username, password)
     if (!user) {
       return NextResponse.json(
         { error: '用户名或密码错误' },
@@ -25,9 +24,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 创建会话
-    const session = sessionDB.create(user.id)
+    const session = await sessionService.create(user.id)
 
-    // 设置认证 cookie
     const response = NextResponse.json({
       message: '登录成功',
       user: {
@@ -41,6 +39,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // 设置认证 cookie
     response.cookies.set('auth-token', session.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

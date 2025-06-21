@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sessionDB, userDB } from '@/lib/db'
+import { sessionService } from '@/lib/database'
 
 // 强制动态渲染，避免静态化
 export const dynamic = 'force-dynamic'
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const session = sessionDB.getByToken(token)
+    const session = await sessionService.getByToken(token)
     if (!session) {
       return NextResponse.json(
         { error: '会话已过期' },
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const user = userDB.getById(session.userId)
+    const user = session.user
     if (!user) {
       return NextResponse.json(
         { error: '用户不存在' },

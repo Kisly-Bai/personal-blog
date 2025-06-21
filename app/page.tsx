@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { postDB, categoryDB, Post, Category } from '@/lib/db'
+import { postService, categoryService } from '@/lib/database'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import FeaturedPosts from '@/components/FeaturedPosts'
@@ -9,16 +9,18 @@ import About from '@/components/About'
 import Footer from '@/components/Footer'
 
 export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
+  const [posts, setPosts] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // 在客户端加载数据，避免服务器端渲染延迟
-    const loadData = () => {
+    const loadData = async () => {
       try {
-        const publishedPosts = postDB.getPublished()
-        const allCategories = categoryDB.getAll()
+        const [publishedPosts, allCategories] = await Promise.all([
+          postService.getPublished(),
+          categoryService.getAll()
+        ])
         setPosts(publishedPosts)
         setCategories(allCategories)
       } catch (error) {

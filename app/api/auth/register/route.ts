@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { userDB, sessionDB } from '@/lib/db'
+import { userService, sessionService } from '@/lib/database'
 
 // 强制动态渲染，避免静态化
 export const dynamic = 'force-dynamic'
@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查用户名是否已存在
-    if (userDB.getByUsername(username)) {
+    const existingUser = await userService.getByUsername(username)
+    if (existingUser) {
       return NextResponse.json(
         { error: '用户名已存在' },
         { status: 409 }
@@ -25,7 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查邮箱是否已存在
-    if (userDB.getByEmail(email)) {
+    const existingEmail = await userService.getByEmail(email)
+    if (existingEmail) {
       return NextResponse.json(
         { error: '邮箱已被注册' },
         { status: 409 }
@@ -33,16 +35,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 创建用户
-    const user = userDB.create({
+    const user = await userService.create({
       username,
       email,
-      password, // 实际应用中应该加密
+      password,
       displayName,
-      role: 'user'
+      role: 'USER'
     })
 
     // 创建会话
-    const session = sessionDB.create(user.id)
+    const session = await sessionService.create(user.id)
 
     const response = NextResponse.json({
       message: '注册成功',

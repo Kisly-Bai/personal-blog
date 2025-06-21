@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sessionDB } from '@/lib/db'
+import { sessionService } from '@/lib/database'
 
 // 强制动态渲染，避免静态化
 export const dynamic = 'force-dynamic'
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const token = request.cookies.get('auth-token')?.value
 
     if (token) {
-      sessionDB.delete(token)
+      await sessionService.delete(token)
     }
 
     const response = NextResponse.json({ message: '退出成功' })
