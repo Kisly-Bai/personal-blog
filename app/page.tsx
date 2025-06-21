@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { postDB, categoryDB, Post, Category } from '@/lib/db'
+import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import FeaturedPosts from '@/components/FeaturedPosts'
 import About from '@/components/About'
@@ -34,27 +35,33 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="min-h-screen">
-        <Hero />
-        <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+      <>
+        <Header />
+        <main className="min-h-screen pt-16">
+          <Hero />
+          <div className="container mx-auto px-4 py-8">
+            <div className="animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
           </div>
-        </div>
-        <About />
-        <Footer />
-      </main>
+          <About />
+          <Footer />
+        </main>
+      </>
     )
   }
 
   return (
-    <main className="min-h-screen">
-      <Hero />
-      <FeaturedPosts posts={posts} categories={categories} />
-      <About />
-      <Footer />
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen pt-16">
+        <Hero />
+        <FeaturedPosts posts={posts} categories={categories} />
+        <About />
+        <Footer />
+      </main>
+    </>
   )
 } 
