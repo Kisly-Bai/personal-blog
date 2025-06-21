@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sessionDB, userDB } from '@/lib/db'
 
+// 强制动态渲染，避免静态化
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get('auth-token')?.value

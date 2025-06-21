@@ -17,11 +17,11 @@
   to = "/blog/"
   status = 301
 
-# 处理 Next.js 路由
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# 处理 Next.js 路由 - 移除这个重定向，让 Next.js 自己处理
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
 
 # 缓存策略
 [[headers]]

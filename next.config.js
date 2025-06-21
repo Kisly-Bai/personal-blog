@@ -18,10 +18,6 @@ const nextConfig = {
       },
     ],
   },
-  // 性能优化
-  experimental: {
-    optimizeCss: true,
-  },
   // 压缩配置
   compress: true,
   // 减少不必要的重定向
@@ -30,11 +26,6 @@ const nextConfig = {
   optimizeFonts: true,
   // 减少构建输出
   output: 'standalone',
-  // 添加国际化支持
-  i18n: {
-    locales: ['zh-CN', 'en'],
-    defaultLocale: 'zh-CN',
-  },
   // 添加安全头
   async headers() {
     return [

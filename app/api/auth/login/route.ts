@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { userDB, sessionDB } from '@/lib/db'
 
+// 强制动态渲染，避免静态化
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json()
@@ -24,16 +27,17 @@ export async function POST(request: NextRequest) {
     // 创建会话
     const session = sessionDB.create(user.id)
 
-    // 设置cookie
+    // 设置认证 cookie
     const response = NextResponse.json({
-      success: true,
+      message: '登录成功',
       user: {
         id: user.id,
         username: user.username,
         displayName: user.displayName,
         email: user.email,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar,
+        bio: user.bio
       }
     })
 
