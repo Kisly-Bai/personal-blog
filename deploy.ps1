@@ -1,46 +1,81 @@
-Write-Host "🚀 开始部署个人博客..." -ForegroundColor Green
+# 性能优化部署脚本
+Write-Host "🚀 开始性能优化部署..." -ForegroundColor Green
 
-# 检查 Git 是否初始化
-if (-not (Test-Path ".git")) {
-    Write-Host "📁 初始化 Git 仓库..." -ForegroundColor Yellow
-    git init
-    git add .
-    git commit -m "Initial commit: Personal blog with admin system"
-    Write-Host "✅ Git 仓库初始化完成" -ForegroundColor Green
-} else {
-    Write-Host "📝 提交最新更改..." -ForegroundColor Yellow
-    git add .
-    git commit -m "Update: Prepare for deployment"
+# 1. 清理缓存
+Write-Host "📦 清理缓存..." -ForegroundColor Yellow
+if (Test-Path ".next") {
+    Remove-Item -Recurse -Force ".next"
+    Write-Host "✅ 清理完成" -ForegroundColor Green
 }
 
-# 检查是否有远程仓库
+if (Test-Path "node_modules") {
+    Remove-Item -Recurse -Force "node_modules"
+    Write-Host "✅ node_modules 清理完成" -ForegroundColor Green
+}
+
+# 2. 重新安装依赖
+Write-Host "📥 安装依赖..." -ForegroundColor Yellow
 try {
-    $remoteUrl = git remote get-url origin 2>$null
-    if ($remoteUrl) {
-        Write-Host "📤 推送到远程仓库..." -ForegroundColor Yellow
-        git push origin main
+    & npm install --production=false
+    Write-Host "✅ 依赖安装完成" -ForegroundColor Green
+} catch {
+    Write-Host "❌ 依赖安装失败: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# 3. 构建项目
+Write-Host "🔨 构建项目..." -ForegroundColor Yellow
+try {
+    & npm run build
+    Write-Host "✅ 构建完成" -ForegroundColor Green
+} catch {
+    Write-Host "❌ 构建失败: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# 4. 性能检查
+Write-Host "📊 性能检查..." -ForegroundColor Yellow
+try {
+    $buildSize = (Get-ChildItem ".next" -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB
+    Write-Host "📦 构建大小: $([math]::Round($buildSize, 2)) MB" -ForegroundColor Cyan
+    
+    if ($buildSize -gt 50) {
+        Write-Host "⚠️  构建大小较大，建议优化" -ForegroundColor Yellow
     } else {
-        Write-Host "⚠️  请先添加远程仓库:" -ForegroundColor Red
-        Write-Host "   git remote add origin https://github.com/你的用户名/你的仓库名.git" -ForegroundColor Cyan
-        Write-Host "   git branch -M main" -ForegroundColor Cyan
-        Write-Host "   git push -u origin main" -ForegroundColor Cyan
+        Write-Host "✅ 构建大小正常" -ForegroundColor Green
     }
 } catch {
-    Write-Host "⚠️  请先添加远程仓库:" -ForegroundColor Red
-    Write-Host "   git remote add origin https://github.com/你的用户名/你的仓库名.git" -ForegroundColor Cyan
-    Write-Host "   git branch -M main" -ForegroundColor Cyan
-    Write-Host "   git push -u origin main" -ForegroundColor Cyan
+    Write-Host "⚠️  无法检查构建大小" -ForegroundColor Yellow
 }
 
-Write-Host ""
-Write-Host "🎉 本地部署准备完成！" -ForegroundColor Green
-Write-Host ""
-Write-Host "📋 下一步操作：" -ForegroundColor Yellow
-Write-Host "1. 访问 https://vercel.com" -ForegroundColor Cyan
-Write-Host "2. 使用 GitHub 账号登录" -ForegroundColor Cyan
-Write-Host "3. 点击 'New Project'" -ForegroundColor Cyan
-Write-Host "4. 导入你的 GitHub 仓库" -ForegroundColor Cyan
-Write-Host "5. 配置部署设置" -ForegroundColor Cyan
-Write-Host "6. 点击 'Deploy'" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "🔗 部署完成后，你将获得一个类似 https://your-blog.vercel.app 的域名" -ForegroundColor Green 
+# 5. 提交到 Git
+Write-Host "📝 提交更改..." -ForegroundColor Yellow
+try {
+    & git add .
+    & git commit -m "Performance optimization: Client-side data loading and caching improvements"
+    Write-Host "✅ 提交完成" -ForegroundColor Green
+} catch {
+    Write-Host "❌ 提交失败: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# 6. 推送到 GitHub
+Write-Host "🚀 推送到 GitHub..." -ForegroundColor Yellow
+try {
+    & git push origin main
+    Write-Host "✅ 推送完成" -ForegroundColor Green
+} catch {
+    Write-Host "❌ 推送失败: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "🎉 性能优化部署完成！" -ForegroundColor Green
+Write-Host "📈 优化内容:" -ForegroundColor Cyan
+Write-Host "   • 客户端数据加载，减少服务器端渲染延迟" -ForegroundColor White
+Write-Host "   • 添加加载状态和骨架屏" -ForegroundColor White
+Write-Host "   • 优化缓存策略" -ForegroundColor White
+Write-Host "   • 压缩静态资源" -ForegroundColor White
+Write-Host "   • 减少 API 超时时间" -ForegroundColor White
+
+Write-Host "⏱️  预计 Vercel 将在 2-3 分钟内完成部署" -ForegroundColor Yellow
+Write-Host "🔗 部署完成后访问: https://personal-blog-lovat-chi-84.vercel.app" -ForegroundColor Cyan 

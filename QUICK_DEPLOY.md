@@ -1,56 +1,13 @@
-# 🚀 快速部署指南
+# 快速部署指南
 
-## 当前状态
-✅ 项目构建成功  
-✅ 所有文件准备就绪  
-✅ 配置文件完整  
+## 准备工作
 
-## 第一步：安装 Git（如果未安装）
+1. 确保您有一个 GitHub 账户
+2. 确保您的项目代码已经推送到 GitHub 仓库
 
-### Windows 用户：
-1. 下载 Git for Windows: https://git-scm.com/download/win
-2. 安装时选择默认选项
-3. 重启 PowerShell 或命令提示符
+## 部署步骤
 
-### 验证安装：
-```bash
-git --version
-```
-
-## 第二步：创建 GitHub 仓库
-
-1. 访问 https://github.com
-2. 点击 "New repository"
-3. 输入仓库名称（例如：personal-blog）
-4. 选择 "Public"
-5. 不要初始化 README（我们已经有文件了）
-6. 点击 "Create repository"
-
-## 第三步：上传代码到 GitHub
-
-在项目目录中执行以下命令：
-
-```bash
-# 初始化 Git 仓库
-git init
-
-# 添加所有文件
-git add .
-
-# 提交更改
-git commit -m "Initial commit: Personal blog with admin system"
-
-# 添加远程仓库（替换为你的仓库 URL）
-git remote add origin https://github.com/你的用户名/你的仓库名.git
-
-# 设置主分支
-git branch -M main
-
-# 推送到 GitHub
-git push -u origin main
-```
-
-## 第四步：部署到 Vercel
+### 方法一：使用 GitHub 登录（推荐）
 
 1. 访问 https://vercel.com
 2. 使用 GitHub 账号登录
@@ -63,64 +20,40 @@ git push -u origin main
    - Install Command: `npm install`
 6. 点击 "Deploy"
 
-## 第五步：配置环境变量
+### 方法二：使用邮箱注册
 
-在 Vercel 项目设置中：
-1. 进入项目仪表板
-2. 点击 "Settings" → "Environment Variables"
-3. 添加以下变量：
-   ```
-   NODE_ENV=production
-   ```
+1. 访问 https://vercel.com
+2. 点击 "Sign Up" 或 "Get Started"
+3. 选择 "Continue with Email"
+4. 填写邮箱地址和密码，完成注册
+5. 登录后，点击 "New Project"
+6. 选择 "Import Git Repository"
+7. 如果您的 GitHub 仓库没有显示，点击 "Configure GitHub App" 或 "Connect GitHub"
+8. 授权 Vercel 访问您的 GitHub 账户
+9. 选择您要部署的 GitHub 仓库
+10. 保持默认设置：
+    - Framework Preset: Next.js
+    - Build Command: `npm run build`
+    - Output Directory: `.next`
+    - Install Command: `npm install`
+11. 点击 "Deploy"
 
-## 第六步：验证部署
+## 部署后
 
-1. 等待部署完成（通常 2-3 分钟）
-2. 访问你的域名（例如：https://your-blog.vercel.app）
-3. 测试以下功能：
-   - ✅ 首页加载
-   - ✅ 博客页面
-   - ✅ 用户注册
-   - ✅ 用户登录
-   - ✅ 管理后台
-   - ✅ 发布文章
+1. 等待构建完成（通常需要 1-3 分钟）
+2. 部署成功后，Vercel 会提供一个域名（如：your-project.vercel.app）
+3. 您可以点击域名访问您的博客网站
+4. 在项目设置中可以配置自定义域名
 
-## 常见问题
+## 自动部署
 
-### 问题1：Git 命令未找到
-**解决**：安装 Git for Windows 并重启终端
+- 每次您推送代码到 GitHub 仓库的 main 分支时，Vercel 会自动重新部署
+- 您可以在 Vercel 仪表板中查看部署历史和状态
 
-### 问题2：推送失败
-**解决**：确保 GitHub 仓库 URL 正确，并且有推送权限
+## 故障排除
 
-### 问题3：构建失败
-**解决**：
-```bash
-# 清理缓存
-Remove-Item -Recurse -Force .next
-npm run build
-```
-
-### 问题4：环境变量错误
-**解决**：在 Vercel 中正确设置环境变量
-
-## 部署成功标志
-
-✅ 网站可以正常访问  
-✅ 所有页面加载正常  
-✅ 用户注册/登录功能正常  
-✅ 管理后台可以访问  
-✅ 文章发布功能正常  
-
-## 下一步
-
-部署成功后，我们可以继续：
-1. 集成真实数据库
-2. 添加密码加密
-3. 实现文件上传
-4. 添加邮件通知
-5. 性能优化
-
----
-
-🎉 **恭喜！你的个人博客已经成功部署到互联网上了！** 
+如果遇到问题：
+1. 检查 GitHub 仓库是否为公开仓库
+2. 确保 package.json 文件在仓库根目录
+3. 检查构建日志中的错误信息
+4. 确保所有依赖都已正确安装 
